@@ -1,3 +1,20 @@
-<h2>Olympic games app</h2>
-<hr />
-<p>{{ olympics$ | json}} data loaded</p>
+<h2>Medals per Country</h2>
+
+<ngx-charts-pie-chart
+  [labels]="true"
+  [results]="this.pieChartData"
+  [scheme]="colorScheme"
+  [view]="[1000,300]">
+  <ng-template #tooltipTemplate let-model="model">
+    <h1>
+      {{ model.name}}
+    </h1>
+    <h2>{{model.value}}</h2>
+  </ng-template>
+</ngx-charts-pie-chart>
+
+
+
+
+
+
