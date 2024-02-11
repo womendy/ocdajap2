@@ -9,10 +9,6 @@ const routes: Routes = [
     component: HomeComponent,
   },
   {
-    path: 'country/:id',
-    component: HomeComponent,
-  },
-  {
     path: '**', // wildcard
     component: NotFoundComponent,
   },

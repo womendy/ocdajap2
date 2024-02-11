@@ -1,17 +1,30 @@
-<h2>Medals per Country</h2>
+<div class="grid">
+  <div class="col-12  sm:col-2 lg:col-3 xl:col-3"></div>
+  <div class="col-12 sm:col-8 lg:col-6 xl:col-6"><h2>Medals per Country</h2>
+    <div class="grid 2">
+      <div class="col-12  sm:col-2 lg:col-2 xl:col-2"></div>
+      <div class="col-12  sm:col-3 lg:col-3 xl:col-3 border"><h3>Number of JOs<br><h4>{{ this.numberOfJo}}</h4></h3></div>
+      <div class="col-12  sm:col-1 lg:col-1 xl:col-1"></div>
+      <div class="col-12  sm:col-4 lg:col-4 xl:col-4 border"><h3>Number of Countries<br><h4>{{ (olympics$ | async)?.length }}</h4></h3></div>
+      <div class="col-12  sm:col-2 lg:col-2 xl:col-2"></div>
+      </div>
+        <ngx-charts-pie-chart
+          [labels]="true"
+          [results]="this.pieChartData"
+          [scheme]="colorScheme"
+        >
+          <ng-template #tooltipTemplate let-model="model">
+            <h1>
+              {{ model.name }}
+            </h1>
+            <h2>{{ model.value }}</h2>
+          </ng-template>
+        </ngx-charts-pie-chart>
+      </div>
+      <div class="col-12  sm:col-2  lg:col-3 xl:col-3"></div>
+    </div>
 
-<ngx-charts-pie-chart
-  [labels]="true"
-  [results]="this.pieChartData"
-  [scheme]="colorScheme"
-  [view]="[1000,300]">
-  <ng-template #tooltipTemplate let-model="model">
-    <h1>
-      {{ model.name}}
-    </h1>
-    <h2>{{model.value}}</h2>
-  </ng-template>
-</ngx-charts-pie-chart>
+
 
 
 
