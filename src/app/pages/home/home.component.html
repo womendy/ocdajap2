@@ -1,3 +1,32 @@
-<h2>Olympic games application</h2>
-<hr />
-<p>{{ (olympics$ | async)?.length }} data loaded</p>
+
+<div class="grid container">
+
+  <div><h2>Medals per Country</h2>
+    <div class="grid 2 legend">
+
+
+      <h3>Number of JOs<br><h4>{{ numberOfJo }}</h4></h3>
+
+
+      <h3>Number of Countries<br><h4>{{ (olympics$ | async)?.length }}</h4></h3>
+    </div>
+
+
+    <ngx-charts-pie-chart class="grid"
+                          [labels]="true"
+                          [results]="pieChartData"
+                          [scheme]="colorScheme"
+                          [view]="customView"
+
+    >
+      <ng-template #tooltipTemplate let-model="model">
+        <h1>
+          {{ model.name }}
+        </h1>
+        <h2>{{ model.value }}</h2>
+      </ng-template>
+    </ngx-charts-pie-chart>
+
+  </div>
+</div>
+
