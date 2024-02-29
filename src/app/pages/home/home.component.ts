@@ -2,10 +2,9 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {filter, map, Observable, Subscription} from 'rxjs';
 import {OlympicService} from 'src/app/core/services/olympic.service';
 import {Color, ScaleType} from "@swimlane/ngx-charts";
+import {Participation} from "../../core/models/Participation";
+import {Olympic} from "../../core/models/Olympic";
 import {CountryMedalsCount, CountryYearMedals} from "../../core/models/CountryMedalsCount";
-import {Participation} from "src/app/core/models/Participation";
-import {Olympic} from 'src/app/core/models/Olympic';
-
 
 
 
