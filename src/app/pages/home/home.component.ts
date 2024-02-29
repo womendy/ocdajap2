@@ -1,11 +1,11 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {filter, from, map, Observable, of, subscribeOn, Subscription} from 'rxjs';
+import {filter, map, Observable, Subscription} from 'rxjs';
 import {OlympicService} from 'src/app/core/services/olympic.service';
 import {Olympic} from '../../core/models/Olympic';
 import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {Participation} from "../../core/models/Participation";
-import {CountryMedalsCount} from "../../core/models/CountryMedalsCount";
-import {Router} from "@angular/router";
+import {CountryMedalsCount, CountryYearMedals} from "../../core/models/CountryMedalsCount";
+
 
 @Component({
   selector: 'app-home',
@@ -14,9 +14,11 @@ import {Router} from "@angular/router";
 })
 export class HomeComponent implements OnInit {
   public olympics$!: Observable<Olympic[]>;
-  pieChartData: any;
+  pieChartData: CountryYearMedals[] = [];
+  customView: [number, number] = [400, 700];
   subscriptions: Subscription[] = [];
   numberOfJo = 0;
+  view: [number, number];
 
   colorScheme: Color = {
     name: 'myScheme',
@@ -25,24 +27,14 @@ export class HomeComponent implements OnInit {
     domain: ['#b8cbe7', '#bfe0f1', '#9780a1', '#89a1db', '#793d52']
   };
 
+  constructor(private olympicService: OlympicService) {
+    this.view = [innerWidth / 1.3, 600];
 
-  constructor(private olympicService: OlympicService, private route: Router) {
   }
 
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics();
-    this.olympics$.subscribe(((response) => {
-      let jos = new Set();
-      response.map((olympic: Olympic, i) => {
-        if (olympic.participations[i]?.year !== undefined) {
-          jos.add(olympic.participations[i]?.year);
-        }
-      });
-      this.numberOfJo = jos.size;
-      console.log(this.numberOfJo);
-    }))
     this.getCountryMedalCount();
-
   }
 
 
@@ -54,45 +46,39 @@ export class HomeComponent implements OnInit {
         map((response: Olympic[]) => {
           let name: string;
           let value = 0;
-          let numberOfJo = 0;
+
           response.forEach((olympic: Olympic) => {
+
+            this.numberOfJo = olympic.participations.length
             name = olympic.country;
-
             value = olympic.participations.reduce((numberOfMedals, countryParticipation: Participation) => numberOfMedals + countryParticipation.medalsCount, 0)
-
-
             countryMedalCounts.push({
               country: name,
               medalsCount: value
-
             })
-
-
-            console.log(olympic)
           })
-          this.pieChartData = countryMedalCounts.map(({country, medalsCount}) => ({name: country, value: medalsCount}));
-          console.log(this.pieChartData)
+          this.pieChartData = countryMedalCounts
+            .map(({country, medalsCount}) => ({
+              name: country, value: medalsCount
+            }));
+
           return countryMedalCounts
-
         }))
-
   }
 
-  getCountryMedalCount() {
 
+  getCountryMedalCount() {
     this.subscriptions.push(this.buildCountryMedalsCount()
       .subscribe((countryMedalCounts: CountryMedalsCount[]) => {
         }
       ))
   }
 
-
-  protected readonly length = length;
-
   ngOnDestroy(): void {
     this.subscriptions.forEach((subs: Subscription) => subs.unsubscribe());
     ""
   }
+
 }
 
 

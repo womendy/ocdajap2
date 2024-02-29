@@ -1,3 +1,15 @@
+legend
+{
+  display: flex;
+
+}
+
+ngx-charts-pie-chart
+{
+  display: inline-block;
+
+}
+
 h2
 {
   background-color: #04838f;
@@ -19,7 +31,7 @@ h3
   border-radius: 0.5rem;
   border-style: solid;
   padding: 0.5rem ;
+  margin: 2rem;
 }
-div.grid2{
-  margin-bottom: -10rem !important;
-  }
+
+
