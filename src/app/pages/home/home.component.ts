@@ -1,10 +1,11 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {filter, map, Observable, Subscription} from 'rxjs';
 import {OlympicService} from 'src/app/core/services/olympic.service';
-import {Olympic} from '../../core/models/Olympic';
 import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {Participation} from "../../core/models/Participation";
+import {Olympic} from "../../core/models/Olympic";
 import {CountryMedalsCount, CountryYearMedals} from "../../core/models/CountryMedalsCount";
+
 
 
 @Component({
@@ -51,7 +52,7 @@ export class HomeComponent implements OnInit {
 
             this.numberOfJo = olympic.participations.length
             name = olympic.country;
-            value = olympic.participations.reduce((numberOfMedals, countryParticipation: Participation) => numberOfMedals + countryParticipation.medalsCount, 0)
+            value = olympic.participations.reduce((numberOfMedals:number, countryParticipation: Participation) => numberOfMedals + countryParticipation.medalsCount, 0)
             countryMedalCounts.push({
               country: name,
               medalsCount: value
