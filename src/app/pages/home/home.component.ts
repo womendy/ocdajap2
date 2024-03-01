@@ -5,6 +5,7 @@ import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {Participation} from "../../core/models/Participation";
 import {Olympic} from "../../core/models/Olympic";
 import {CountryMedalsCount, CountryYearMedals} from "../../core/models/CountryMedalsCount";
+import {Router} from "@angular/router";
 
 
 
@@ -28,7 +29,7 @@ export class HomeComponent implements OnInit {
     domain: ['#b8cbe7', '#bfe0f1', '#9780a1', '#89a1db', '#793d52']
   };
 
-  constructor(private olympicService: OlympicService) {
+  constructor(private olympicService: OlympicService, private router: Router) {
     this.view = [innerWidth / 1.3, 600];
 
   }
@@ -73,6 +74,13 @@ export class HomeComponent implements OnInit {
       .subscribe((countryMedalCounts: CountryMedalsCount[]) => {
         }
       ))
+  }
+
+  selectOneCountry(event: { name: string, value: number, label: string }) {
+    let name = event.name;
+    console.log('event', event);
+    this.router.navigate([`country/${name}`]);
+
   }
 
   ngOnDestroy(): void {

@@ -3,19 +3,15 @@
 
   <div><h2>Medals per Country</h2>
     <div class="grid 2 legend">
-
-
       <h3>Number of JOs<br><h4>{{ numberOfJo }}</h4></h3>
-
-
       <h3>Number of Countries<br><h4>{{ (olympics$ | async)?.length }}</h4></h3>
     </div>
-
 
     <ngx-charts-pie-chart class="grid"
                           [labels]="true"
                           [results]="pieChartData"
                           [scheme]="colorScheme"
+                          (select)="selectOneCountry($event)"
                           [view]="customView"
 
     >
