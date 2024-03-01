@@ -1,2 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
+html,
+body {
+  box-sizing: border-box;
+  margin: 0;
+  background-color: var(--surface-100);
+  font-family: var(--font-family);
+}

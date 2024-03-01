@@ -27,7 +27,7 @@ export class DetailComponent implements OnInit {
 
 
   countryData: Serie[] = [];
-  view : [number,number];
+
 
   // options
   //legend: boolean = true;
@@ -60,7 +60,7 @@ export class DetailComponent implements OnInit {
 
 
   ) {
-    this.view = [innerWidth / 1.6, 400];
+
   }
 
   ngOnInit(): void {
@@ -99,9 +99,7 @@ export class DetailComponent implements OnInit {
   }
   // view is the variable used to change the chart size (Ex: view = [width, height])
 
-  onResize({$event}: { $event: any }) {
-    this.view = [$event?.target.innerWidth / 1.35, 400];
-  }
+
 
 
 

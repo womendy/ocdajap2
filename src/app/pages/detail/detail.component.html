@@ -1,6 +1,4 @@
 <div class="grid container">
-<!--  <div class="sm:col-2 lg:col-2 xl:col-2"></div>-->
-<!--  <div class="sm:col-8 lg:col-8 xl:col-8">-->
     <div ><h2>{{ countryName }}</h2>
         <div class="grid 2 legend">
             <h3>Number of Entries<br><h4>{{ (olympics$ | async)?.length  }}</h4></h3>
@@ -9,7 +7,7 @@
         </div>
     </div>
   <ngx-charts-line-chart
-                         (window:resize)="onResize({$event : $event})"
+
                        [scheme]="colorScheme"
                        [showXAxisLabel]="showXAxisLabel"
                        [showYAxisLabel]="showYAxisLabel"
@@ -17,17 +15,16 @@
                        [yAxis]="yAxis"
                        [xAxisLabel]="xAxisLabel"
                        [xScaleMax]="2020"
-                         [view]="view"
                        [results]="countryData"
 
 >
-<!--    <div class="sm:col-2 lg:col-2 xl:col-2"></div>-->
+
 </ngx-charts-line-chart>
 
 
 
     </div>
 <p class="grid"><button type="button" (click)="goBack()">go back Home</button></p>
-<!--</div>-->
+
 
 

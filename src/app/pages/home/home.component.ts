@@ -71,14 +71,11 @@ export class HomeComponent implements OnInit {
 
   getCountryMedalCount() {
     this.subscriptions.push(this.buildCountryMedalsCount()
-      .subscribe((countryMedalCounts: CountryMedalsCount[]) => {
-        }
-      ))
+      .subscribe())
   }
 
   selectOneCountry(event: { name: string, value: number, label: string }) {
     let name = event.name;
-    console.log('event', event);
     this.router.navigate([`country/${name}`]);
 
   }
