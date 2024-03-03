@@ -1,9 +1,9 @@
 <div class="grid container">
     <div ><h2>{{ countryName }}</h2>
         <div class="grid 2 legend">
-            <h3>Number of Entries<br><h4>{{ (olympics$ | async)?.length  }}</h4></h3>
-            <h3>Total number medals<br><h4>{{ (olympics$ | async)?.length }}</h4></h3>
-            <h3>Total number of atthletes<br><h4>{{ (olympics$ | async)?.length }}</h4></h3>
+            <h3>Number of Entries<br><h4>{{ countryMedalAthleteCount?.participations  }}</h4></h3>
+            <h3>Total number medals<br><h4>{{ countryMedalAthleteCount?.medalCount }}</h4></h3>
+            <h3>Total number of atthletes<br><h4>{{ countryMedalAthleteCount?.athleteCount }}</h4></h3>
         </div>
     </div>
   <ngx-charts-line-chart
@@ -16,6 +16,7 @@
                        [xAxisLabel]="xAxisLabel"
                        [xScaleMax]="2020"
                        [results]="countryData"
+                       [view]="view"
 
 >
 

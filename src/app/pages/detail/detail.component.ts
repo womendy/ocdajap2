@@ -6,7 +6,8 @@ import {Olympic} from "../../core/models/Olympic";
 import {CountryYearMedals, Serie} from "../../core/models/CountryMedalsCount";
 import {Color, NgxChartsModule, ScaleType} from "@swimlane/ngx-charts";
 import {Location} from "@angular/common";
-import {Participation} from "../../core/models/Participation";
+import {CountryMedalAthleteCount, Participation} from "../../core/models/Participation";
+import { ViewSizeService } from 'src/app/core/services/view-size.service';
 
 @Component({
   selector: 'app-detail',
@@ -22,7 +23,8 @@ export class DetailComponent implements OnInit {
   id !: number;
   idPays!: number;
   countryName = '';
-  numberOfAthletes: number=0;
+  countryMedalAthleteCount?: CountryMedalAthleteCount;
+  view!: [number, number];
 
 
 
@@ -57,14 +59,30 @@ export class DetailComponent implements OnInit {
     //private router: Router,
     private route: ActivatedRoute,
     private location:Location,
-
+    private viewSizeService: ViewSizeService,
 
   ) {
 
   }
 
   ngOnInit(): void {
+      this.viewSizeService.getViewSize()
+      .subscribe((viewSize) => (this.view = viewSize));
+
+
+   
+
+
+
     this.countryName = this.route.snapshot.params['name'];
+
+    // Calcul nombre d'athlète pour le pays concerné
+    this.olympicService.countryMedalAthleteCount$.subscribe((countryMAC: CountryMedalAthleteCount[]) => {
+      this.countryMedalAthleteCount = countryMAC.find(cmac => cmac.country === this.countryName);
+      console.log('countryData', this.countryMedalAthleteCount)
+    })
+
+
     this.olympics$ = this.olympicService.getOlympics();
     this.olympics$.subscribe((response) => {
       if (response) {
@@ -78,6 +96,8 @@ export class DetailComponent implements OnInit {
     })
 
   }
+
+
 
 
   private initSeries(olympics: Olympic[]): Serie {

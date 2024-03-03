@@ -1,6 +1,6 @@
 export interface CountryMedalsCount {
-  country: string;
-  medalsCount: number;
+  name: string;
+  value: number;
 }
 
 export interface CountryYearMedals {

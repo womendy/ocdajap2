@@ -6,8 +6,9 @@ medalsCount: number;
 athleteCount: number;
 }
 
-export interface CountryAthleteMedalsCount {
+export interface CountryMedalAthleteCount {
   country: string;
-  medalsCount: number;
+  medalCount: number;
   athleteCount: number;
+  participations : number
 }

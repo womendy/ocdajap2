@@ -1,11 +1,12 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {filter, map, Observable, Subscription} from 'rxjs';
-import {OlympicService} from 'src/app/core/services/olympic.service';
-import {Color, ScaleType} from "@swimlane/ngx-charts";
-import {Participation} from "../../core/models/Participation";
-import {Olympic} from "../../core/models/Olympic";
-import {CountryMedalsCount, CountryYearMedals} from "../../core/models/CountryMedalsCount";
-import {Router} from "@angular/router";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { filter, map, Observable, Subscription, take, tap } from 'rxjs';
+import { OlympicService } from 'src/app/core/services/olympic.service';
+import { Color, ScaleType } from "@swimlane/ngx-charts";
+import { CountryMedalAthleteCount, Participation } from "../../core/models/Participation";
+import { Olympic } from "../../core/models/Olympic";
+import { CountryMedalsCount, CountryYearMedals } from "../../core/models/CountryMedalsCount";
+import { Router } from "@angular/router";
+import { ViewSizeService } from 'src/app/core/services/view-size.service';
 
 
 
@@ -16,11 +17,12 @@ import {Router} from "@angular/router";
 })
 export class HomeComponent implements OnInit {
   public olympics$!: Observable<Olympic[]>;
-  pieChartData: CountryYearMedals[] = [];
+  countryMedalAthleteCount$!: Observable<CountryMedalAthleteCount[]>;
+  pieChartData!: CountryYearMedals[];
   customView: [number, number] = [400, 700];
   subscriptions: Subscription[] = [];
   numberOfJo = 0;
-  view: [number, number];
+  view!: [number, number];
 
   colorScheme: Color = {
     name: 'myScheme',
@@ -29,49 +31,34 @@ export class HomeComponent implements OnInit {
     domain: ['#b8cbe7', '#bfe0f1', '#9780a1', '#89a1db', '#793d52']
   };
 
-  constructor(private olympicService: OlympicService, private router: Router) {
-    this.view = [innerWidth / 1.3, 600];
-
+  constructor(
+    private olympicService: OlympicService,
+    private viewSizeService: ViewSizeService,
+    private router: Router) {
   }
 
   ngOnInit(): void {
+
+    this.subscriptions.push(
+      this.viewSizeService.getViewSize()
+        .subscribe((viewSize) => {
+          this.view = viewSize
+        }));
+
     this.olympics$ = this.olympicService.getOlympics();
-    this.getCountryMedalCount();
-  }
-
-
-  buildCountryMedalsCount(): Observable<CountryMedalsCount[]> {
-    let countryMedalCounts: CountryMedalsCount[] = [];
-    return this.olympicService.getOlympics()
-      .pipe(
-        filter(response => response),
-        map((response: Olympic[]) => {
-          let name: string;
-          let value = 0;
-
-          response.forEach((olympic: Olympic) => {
-
-            this.numberOfJo = olympic.participations.length
-            name = olympic.country;
-            value = olympic.participations.reduce((numberOfMedals:number, countryParticipation: Participation) => numberOfMedals + countryParticipation.medalsCount, 0)
-            countryMedalCounts.push({
-              country: name,
-              medalsCount: value
+    this.countryMedalAthleteCount$ = this.olympicService.countryMedalAthleteCount$;
+    this.subscriptions.push(
+      this.olympicService.countryMedalAthleteCount$.subscribe(
+        countryMedalAthleteCount => {
+            let chartData: CountryYearMedals[] = [];
+            countryMedalAthleteCount.forEach(cmac => {
+              chartData.push({
+                name: cmac.country,
+                value: cmac.medalCount
+              })
             })
-          })
-          this.pieChartData = countryMedalCounts
-            .map(({country, medalsCount}) => ({
-              name: country, value: medalsCount
-            }));
-
-          return countryMedalCounts
+            this.pieChartData = chartData;
         }))
-  }
-
-
-  getCountryMedalCount() {
-    this.subscriptions.push(this.buildCountryMedalsCount()
-      .subscribe())
   }
 
   selectOneCountry(event: { name: string, value: number, label: string }) {
@@ -82,7 +69,6 @@ export class HomeComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((subs: Subscription) => subs.unsubscribe());
-    ""
   }
 
 }
