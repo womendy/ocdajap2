@@ -1,30 +1,31 @@
-<div class="grid container">
-    <div ><h2>{{ countryName }}</h2>
-        <div class="grid 2 legend">
-            <h3>Number of Entries<br><h4>{{ (olympics$ | async)?.length  }}</h4></h3>
-            <h3>Total number medals<br><h4>{{ (olympics$ | async)?.length }}</h4></h3>
-            <h3>Total number of atthletes<br><h4>{{ (olympics$ | async)?.length }}</h4></h3>
-        </div>
+<div>
+  <div><h2>{{ countryName }}</h2>
+    <div class="legend">
+      <h3 class="legendchild">Number of Entries<br><h4>{{ countryMedalAthleteCount?.participations }}</h4></h3>
+
+      <h3 class="legendchild">Total number medals<br><h4>{{ countryMedalAthleteCount?.medalCount }}</h4></h3>
+      <h3 class="legendchild">Total number of atthletes<br><h4>{{ countryMedalAthleteCount?.athleteCount }}</h4></h3>
     </div>
-  <ngx-charts-line-chart
+    <p>
+      <button type="button" (click)="goBack()">go back Home</button>
+    </p>
+  </div>
 
-                       [scheme]="colorScheme"
-                       [showXAxisLabel]="showXAxisLabel"
-                       [showYAxisLabel]="showYAxisLabel"
-                       [xAxis]="xAxis"
-                       [yAxis]="yAxis"
-                       [xAxisLabel]="xAxisLabel"
-                       [xScaleMax]="2020"
-                       [results]="countryData"
+  <div class="chart">
+    <ngx-charts-line-chart
 
->
+      [scheme]="colorScheme"
+      [showXAxisLabel]="showXAxisLabel"
+      [showYAxisLabel]="showYAxisLabel"
+      [xAxis]="xAxis"
+      [yAxis]="yAxis"
+      [xAxisLabel]="xAxisLabel"
+      [xScaleMax]="2020"
+      [view]="view"
+      [results]="countryData"
+    >
 
-</ngx-charts-line-chart>
+    </ngx-charts-line-chart>
+  </div>
 
-
-
-    </div>
-<p class="grid"><button type="button" (click)="goBack()">go back Home</button></p>
-
-
-
+</div>

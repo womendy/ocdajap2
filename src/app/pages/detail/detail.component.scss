@@ -1,6 +1,10 @@
+/* ngx charts bypass */
+.ngx-charts-outer {
+  -webkit-animation:chartFadeIn linear 0 !important;
+  animation:chartFadeIn linear 0 !important;
+}
 
-h2
-{
+h2 {
   background-color: #04838f;
   color: white;
   border-radius: 0.5rem;
@@ -10,45 +14,47 @@ h2
 
 }
 
-ngx-charts-line-chart {
+.chart {
   display: flex;
-  align-content: center;
+  justify-content: center;
+}
 
-  padding: 2rem;
 
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.legendchild {
+  box-sizing: border-box;
+  margin: 5px;
+  padding: 2px 5px 0 5px;
 
 }
-legend
-{
-  display: flex;
-  margin-left: 25rem;
 
-}
-button
-{
+button {
   margin-left: 3rem;
 }
 
-h2
-{
+h2 {
   background-color: #04838f;
   color: white;
   border-radius: 0.5rem;
-  padding: 1rem 1rem;
   text-align: center;
+  margin-left: 0;
 }
-h4
-{
+
+h4 {
   color: black;
   font-weight: bold;
   text-align: center;
 }
-h3
-{
+
+h3 {
   color: grey;
   border-color: #04838f;
   border-radius: 0.5rem;
   border-style: solid;
-  padding: 0.5rem ;
-  margin: 2rem;
+
 }
