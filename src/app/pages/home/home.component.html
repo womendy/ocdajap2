@@ -1,22 +1,17 @@
-
-<div class="grid container">
+<div class="grid">
 
   <div><h2>Medals per Country</h2>
-    <div class="grid 2 legend">
-
-
-      <h3>Number of JOs<br><h4>{{ numberOfJo }}</h4></h3>
-
-
-      <h3>Number of Countries<br><h4>{{ (olympics$ | async)?.length }}</h4></h3>
+    <div class="legend">
+      <h3 class="legendchild">Number of JOs<br><h4>{{ numberOfJo }}</h4></h3>
+      <h3 class="legendchild">Number of Countries<br><h4>{{ (olympics$ | async)?.length }}</h4></h3>
     </div>
 
-
-    <ngx-charts-pie-chart class="grid"
+    <div class="chart"><ngx-charts-pie-chart
                           [labels]="true"
                           [results]="pieChartData"
                           [scheme]="colorScheme"
-                          [view]="customView"
+                          (select)="selectOneCountry($event)"
+                          [view]="view"
 
     >
       <ng-template #tooltipTemplate let-model="model">
@@ -26,6 +21,7 @@
         <h2>{{ model.value }}</h2>
       </ng-template>
     </ngx-charts-pie-chart>
+    </div>
 
   </div>
 </div>

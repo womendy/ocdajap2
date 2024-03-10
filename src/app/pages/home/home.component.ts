@@ -1,11 +1,12 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {filter, map, Observable, Subscription} from 'rxjs';
-import {OlympicService} from 'src/app/core/services/olympic.service';
-import {Color, ScaleType} from "@swimlane/ngx-charts";
-import {Participation} from "../../core/models/Participation";
-import {Olympic} from "../../core/models/Olympic";
-import {CountryMedalsCount, CountryYearMedals} from "../../core/models/CountryMedalsCount";
-
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { OlympicService } from 'src/app/core/services/olympic.service';
+import { Color, ScaleType } from "@swimlane/ngx-charts";
+import { CountryMedalAthleteCount } from "../../core/models/Participation";
+import { Olympic } from "../../core/models/Olympic";
+import { CountryYearMedals } from "../../core/models/CountryMedalsCount";
+import { Router } from "@angular/router";
+import {ViewSizeService} from "../../core/services/view-size.service";
 
 
 @Component({
@@ -13,13 +14,13 @@ import {CountryMedalsCount, CountryYearMedals} from "../../core/models/CountryMe
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit ,OnDestroy{
   public olympics$!: Observable<Olympic[]>;
-  pieChartData: CountryYearMedals[] = [];
-  customView: [number, number] = [400, 700];
+  countryMedalAthleteCount$!: Observable<CountryMedalAthleteCount[]>;
+  pieChartData!: CountryYearMedals[];
   subscriptions: Subscription[] = [];
   numberOfJo = 0;
-  view: [number, number];
+  view!: [number, number];
 
   colorScheme: Color = {
     name: 'myScheme',
@@ -28,60 +29,43 @@ export class HomeComponent implements OnInit {
     domain: ['#b8cbe7', '#bfe0f1', '#9780a1', '#89a1db', '#793d52']
   };
 
-  constructor(private olympicService: OlympicService) {
-    this.view = [innerWidth / 1.3, 600];
-
+  constructor(
+    private olympicService: OlympicService,
+    private viewSizeService: ViewSizeService,
+    private router: Router) {
   }
 
   ngOnInit(): void {
+
+    this.subscriptions.push(
+      this.viewSizeService.getViewSize()
+        .subscribe((viewSize) => {
+          this.view = viewSize
+        }));
+
     this.olympics$ = this.olympicService.getOlympics();
-    this.getCountryMedalCount();
-  }
-
-
-  buildCountryMedalsCount(): Observable<CountryMedalsCount[]> {
-    let countryMedalCounts: CountryMedalsCount[] = [];
-    return this.olympicService.getOlympics()
-      .pipe(
-        filter(response => response),
-        map((response: Olympic[]) => {
-          let name: string;
-          let value = 0;
-
-          response.forEach((olympic: Olympic) => {
-
-            this.numberOfJo = olympic.participations.length
-            name = olympic.country;
-            value = olympic.participations.reduce((numberOfMedals:number, countryParticipation: Participation) => numberOfMedals + countryParticipation.medalsCount, 0)
-            countryMedalCounts.push({
-              country: name,
-              medalsCount: value
+    this.countryMedalAthleteCount$ = this.olympicService.countryMedalAthleteCount$;
+    this.subscriptions.push(
+      this.olympicService.countryMedalAthleteCount$.subscribe(
+        countryMedalAthleteCount => {
+          let chartData: CountryYearMedals[] = [];
+          countryMedalAthleteCount.forEach(cmac => {
+            chartData.push({
+              name: cmac.country,
+              value: cmac.medalCount
             })
-          })
-          this.pieChartData = countryMedalCounts
-            .map(({country, medalsCount}) => ({
-              name: country, value: medalsCount
-            }));
-
-          return countryMedalCounts
+            this.numberOfJo = cmac.participations})
+          this.pieChartData = chartData;
         }))
   }
 
-
-  getCountryMedalCount() {
-    this.subscriptions.push(this.buildCountryMedalsCount()
-      .subscribe((countryMedalCounts: CountryMedalsCount[]) => {
-        }
-      ))
+  selectOneCountry(event: { name: string, value: number, label: string }) {
+    let name = event.name;
+    this.router.navigate([`country/${name}`]);
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((subs: Subscription) => subs.unsubscribe());
-    ""
   }
 
 }
-
-
-
-
