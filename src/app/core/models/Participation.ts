@@ -7,6 +7,7 @@ export interface Participation {
 }
 
 export interface CountryMedalAthleteCount {
+  id:number;
   country: string;
   medalCount: number;
   athleteCount: number;

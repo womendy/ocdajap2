@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {OlympicService} from "../../core/services/olympic.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Observable, Subscription, take} from "rxjs";
 import {Olympic} from "../../core/models/Olympic";
 import {CountryYearMedals, Serie} from "../../core/models/CountryMedalsCount";
@@ -34,6 +34,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   showYAxisLabel: boolean = true;
   showXAxisLabel: boolean = true;
   xAxisLabel: string = 'Dates';
+  validCountryNames: string[] = [];
 
   colorScheme: Color = {
     name: 'myScheme',
@@ -47,6 +48,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private location: Location,
     private viewSizeService: ViewSizeService,
+    private router: Router
   ) {
     // this.view = [ innerWidth/1.8, innerHeight  ];
   }
@@ -54,7 +56,26 @@ export class DetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.push(this.viewSizeService.getViewSize()
       .subscribe((viewSize) => (this.view = viewSize)));
-    this.countryName = this.route.snapshot.params['name'];
+
+
+
+    //
+    // this.route.params.subscribe(params => {
+    //   const countryname = params['countryname'].toLowerCase(); // Normalize to lowercase for case-insensitive comparison
+    //   if (this.isValidCountry(countryname)) {
+    //     // Handle the case where the country name is valid
+    //     this.countryName = this.route.snapshot.params['name'];
+    //     console.log('Valid country:', countryname);
+    //     // You can proceed with rendering the component content for the valid country
+    //   } else {
+    //     // Handle the case where the country name is not valid
+    //     console.log('Invalid country:', countryname);
+    //     // Redirect to a default page or show an error message
+    //     this.router.navigate(['/notFound']); // Redirect to an error page
+    //   }
+    // });
+
+
 
     // Calcul nombre d'athlète pour le pays concerné
     this.olympicService.countryMedalAthleteCount$
@@ -74,6 +95,10 @@ export class DetailComponent implements OnInit, OnDestroy {
       })
   }
 
+
+  private  isValidCountry(country: string): boolean {
+    return this.olympicService.isValidCountryName(country);
+  }
 
   private initSeries(olympics: Olympic[]): Serie {
     const countryYearMedals: CountryYearMedals[] = [];
