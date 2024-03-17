@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {OlympicService} from "../../core/services/olympic.service";
-import {ActivatedRoute} from "@angular/router";
-import {Observable, Subscription, take} from "rxjs";
+import {ActivatedRoute, Router} from "@angular/router";
+import {Observable, Subject, Subscription, take, takeUntil} from "rxjs";
 import {Olympic} from "../../core/models/Olympic";
 import {CountryYearMedals, Serie} from "../../core/models/CountryMedalsCount";
 import {Color, NgxChartsModule, ScaleType} from "@swimlane/ngx-charts";
 import {Location} from "@angular/common";
-import {CountryMedalAthleteCount } from "../../core/models/Participation";
+import {CountryMedalAthleteCount} from "../../core/models/Participation";
 import {ViewSizeService} from "../../core/services/view-size.service";
 
 
@@ -24,10 +24,13 @@ export class DetailComponent implements OnInit, OnDestroy {
   id !: number;
   idPays!: number;
   subscriptions: Subscription[] = [];
+
   countryName = '';
   countryMedalAthleteCount?: CountryMedalAthleteCount;
   view!: [number, number];
   countryData: Serie[] = [];
+  countryDataStop$= new Subject<boolean>();
+  seriesDataStop$= new Subject<boolean>();
 
   xAxis: boolean = true;
   yAxis: boolean = true;
@@ -47,6 +50,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private location: Location,
     private viewSizeService: ViewSizeService,
+    private router: Router
   ) {
     // this.view = [ innerWidth/1.8, innerHeight  ];
   }
@@ -58,18 +62,25 @@ export class DetailComponent implements OnInit, OnDestroy {
 
     // Calcul nombre d'athlète pour le pays concerné
     this.olympicService.countryMedalAthleteCount$
-      .pipe(take(1))
+      .pipe(takeUntil(this.countryDataStop$))
       .subscribe((countryMAC: CountryMedalAthleteCount[]) => {
-        this.countryMedalAthleteCount = countryMAC.find(cmac => cmac.country === this.countryName);
+        if (countryMAC?.length > 0) {
+          this.countryMedalAthleteCount = countryMAC.find(cmac => cmac.country === this.countryName);
+          if (!!!this.countryMedalAthleteCount) {
+            this.router.navigate(['404'])
+          }
+        this.countryDataStop$.next(true)
+        }
       })
 
     this.olympics$ = this.olympicService.getOlympics();
     this.olympics$
-      .pipe(take(1))
+      .pipe(takeUntil(this.seriesDataStop$))
       .subscribe((response) => {
-        if (response) {
+
+        if (response?.length > 0)  {
           this.countryData.push(this.initSeries(response));
-         // let data = response.map(res => [res.country, res.participations]);
+          this.seriesDataStop$.next(true)
         }
       })
   }
