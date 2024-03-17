@@ -13,10 +13,8 @@ const routes: Routes = [
     path: 'country/:name',
     component: DetailComponent,
   },
-  {
-    path: '**', // wildcard
-    component: NotFoundComponent,
-  },
+  { path: '404', component: NotFoundComponent },
+  { path: '**', redirectTo: '404' },
 ];
 
 @NgModule({
